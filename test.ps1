@@ -1,4 +1,4 @@
-$apiUrl = "http://localhost:3000/add" 
+$apiUrl = "https://guest-notebook.onrender.com/add" 
 
 $data = @{
     id = "deger1"  
