@@ -25,12 +25,13 @@ app.get('/', (req, res) => {
     res.json({hello: 'world'});
 });
 
-app.get('/add/:id', (req, res) => {
-    const { id } = req.params;  
+app.post('/add', (req, res) => {
+    const { id } = req.body;  // id, POST isteği ile body'den alınır
     console.log(id);
     console.log(time);
-    
+
     if (id) {
+        // ID varsa veritabanına ekleme işlemi yapılır
         Insert(db, id, time.toString(), (err, result) => {
             if (err) {
                 console.log("Hata:", err);
@@ -56,6 +57,7 @@ app.get('/add/:id', (req, res) => {
         });
     }
 });
+
 
 app.listen(3000, function(){
     console.log('Server running on port 3000');
