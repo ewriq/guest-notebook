@@ -25,8 +25,8 @@ app.get('/', (req, res) => {
     res.json({hello: 'world'});
 });
 
-app.post('/add', (req, res) => {
-    const { id } = req.body; 
+app.get('/add/:id', (req, res) => {
+    const { id } = req.params;  
     console.log(id);
     console.log(time);
     
@@ -48,7 +48,7 @@ app.post('/add', (req, res) => {
             }
         });
     } else {
-        console.log("ses");
+        console.log("ID bulunamadı");
         res.json({
             code: 404,
             message: 'Veri bulunamadı',
@@ -56,8 +56,6 @@ app.post('/add', (req, res) => {
         });
     }
 });
-
-
 
 app.listen(3000, function(){
     console.log('Server running on port 3000');
