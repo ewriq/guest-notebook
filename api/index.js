@@ -9,6 +9,8 @@ const { time } = require('./Utils/time');
 const conn = require('./Db/Connect');
 const table = require('./Db/Table');
 const Insert = require('./Db/Insert');
+const { CONSTRAINT } = require('sqlite3');
+const List = require('./Db/List');
 
 
 
@@ -18,11 +20,22 @@ table(db);
 
 //middleware
 app.use(express.json());
-
+app.set('view engine', 'ejs');
 
 //routes gateways
 app.get('/', (req, res) => {
     res.json({hello: 'world'});
+});
+
+
+app.get('/list', (req, res) => {
+    List(db, (err, data) => {
+        if (err) {
+            return res.status(500).send('db hatası');
+        }
+
+        res.render('index', { logs: data });
+    });
 });
 
 app.post('/add', (req, res) => {
@@ -56,7 +69,6 @@ app.post('/add', (req, res) => {
         });
     }
 });
-
 
 app.listen(3000, function(){
     console.log('Server running on port 3000');
