@@ -1,7 +1,9 @@
 const { Client } = require('pg');
 
 function conn() {
-
+  
+ 
+  
   client.connect((err) => {
     if (err) {
       console.error('Veritabanına bağlanırken hata oluştu: ' + err.message);
