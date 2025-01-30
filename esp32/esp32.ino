@@ -5,7 +5,7 @@ HardwareSerial mySerial(2);
 
 const char* ssid = "ewriq";    
 const char* password = "f9663ddc"; 
-const char* serverName = "https://honey-able-attention.glitch.me/add/";  
+const char* serverName = "https://99420fcb-2bfc-4fb3-b860-9d5625e1bb8f-00-epch6mb1z83e.sisko.replit.dev/add/";  
 
 const int wLed = 2;  
 const int sLed = 4;  
@@ -102,6 +102,12 @@ int sendPostRequest(String id) {
     int httpResponseCode = http.POST(jsonData);  
 
     if (httpResponseCode == 200) {
+      String response = http.getString();
+        digitalWrite(rLed, HIGH); 
+        delay(200);
+        digitalWrite(rLed, LOW); 
+    } 
+    if (httpResponseCode == 404) {
       String response = http.getString();
         digitalWrite(rLed, HIGH); 
         delay(200);

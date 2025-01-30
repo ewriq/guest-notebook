@@ -5,6 +5,7 @@ const app = express();
 
 //utils
 const { time } = require('./Utils/time');
+const transporter = require('./Mail/SendInfo');
 
 //db
 const conn = require('./Db/Connect');
@@ -14,6 +15,8 @@ const CheckAdmin = require('./Db/Admin/CheckAdmin');
 const CheckVerified = require('./Db/Verified/CheckVerfied');
 const Insert = require('./Db/Verified/Insert');
 const ListVerified = require('./Db/Verified/ListVerified');
+const Verified = require('./Db/Verified/Verified');
+
 
 const db = conn();
 
@@ -35,7 +38,7 @@ app.get('/', (req, res) => {
 app.post('/login', (req, res) => {
     const { username, password } = req.body;
     console.log(username,password);
-  
+
     CheckAdmin(db, username, password, (err, statusCode) => {
       if (err) {
         console.error(err);
@@ -78,17 +81,31 @@ app.post('/add', (req, res) => {
     console.log(time);
 
     if (id) {
-        CheckVerified(client, id, (err, name) => {
+        CheckVerified(db, String(id), (err, name, email) => {
             if (err) {
               console.log("Hata:", err);
             } else if (name) {
-                Insert(db, id, time.toString(), (err, result) => {
+                Insert(db, name, time.toString(), (err, result) => {
                     if (err) {
                         console.log(err);
                         res.status(500).json({
                             message: 'Bir hata oluştu',
                         });
                     } else if (result === 200) {
+                        var mailOptions = {
+                            from: email,
+                            to: email,
+                            subject: 'Bildiri',
+                            text: "öğrencisi oldugunuz "+ name + " kapıdan geçti."
+                          };
+
+                          transporter.sendMail(mailOptions, function(error, info) {
+                            if (error) {
+                              console.log(error);
+                            } else {
+                              console.log('Email sent: ' + info.response);
+                            }
+                        });
                         res.status(200).json({
                             message: 'İşlem başarıyla gerçekleştirildi',
                         });
@@ -117,6 +134,42 @@ app.post('/add', (req, res) => {
         });
     }
 });
+
+app.post('/verified', (req, res) => {
+    const { name, id, email } = req.body;
+    console.log("ID:", id);
+    console.log("Name:", name);
+    console.log("Email:", email);
+
+    if (id && email && name) {
+        // Kullanıcıyı kontrol et
+        CheckVerified(db, String(id), (err, existingName, existingEmail) => {
+            if (err) {
+                console.log("Hata:", err);
+                res.send('Bir hata oluştu');
+            } else {
+                if (existingName) {
+                    console.log("Kullanıcı zaten mevcut, yönlendiriliyor...");
+                    res.redirect("/dashboard");
+                } else {
+                    Verified(db, String(id), name, email, (err, code) => {
+                        if (err) {
+                            res.send('Bir hata oluştu', err);
+                        } else if (code === 200) {
+                            res.send("kaydedildi");
+                        } else {
+                            res.send('Kayıt başarısız');
+                        }
+                    });
+                }
+            }
+        });
+    } else {
+        console.log("Veri eksik:", { id, name, email });
+        res.send("Veri bulunamadı");
+    }
+});
+
 
 app.listen(3000, function(){
     console.log('Server running on port 3000');
