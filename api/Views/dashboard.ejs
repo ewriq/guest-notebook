@@ -5,35 +5,87 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard</title>
     <style>
-        h1 { 
-            text-align: left;
-            margin-right: 100px;
+        /* Genel stil */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
         }
-        table {
+
+        /* Navbar stili */
+        .navbar {
+            background-color: #141414;
+            color: white;
+            padding: 15px;
+            text-align: center;
+            position: sticky;
+            top: 0;
             width: 100%;
-            border-collapse: collapse;
+            z-index: 1000;
         }
 
-        table, th, td {
-            border: 1px solid black;
+        .navbar a {
+            color: white;
+            text-decoration: none;
+            padding: 10px 15px;
+            margin: 0 10px;
+            font-size: 18px;
         }
 
-        th {
-            padding: 8px;
-            text-align: left;
-        }
-        td  {
-            word-wrap: break-word;
-            max-width: 200px; 
-            padding: 1px;
-            text-align: left;
+        .navbar a:hover {
+            background-color: #000000d3;
+            border-radius: 5px;
         }
 
-        th {
-            background-color: #f2f2f2;
+        /* Sidebar stili */
+        .sidebar {
+            height: 100%;
+            width: 250px;
+            background-color: #141414;
+            position: fixed;
+            top: 0;
+            left: -250px;
+            transition: 0.3s;
+            padding-top: 20px;
+            color: white;
         }
-        .tablo {
-            max-width: 1900px;
+
+        .sidebar a {
+            padding: 15px 25px;
+            text-decoration: none;
+            font-size: 18px;
+            color: white;
+            display: block;
+            transition: 0.3s;
+        }
+
+        .sidebar a:hover {
+            background-color: #000000d3;
+            border-radius: 5px;
+        }
+
+        /* Sidebar açıkken */
+        .sidebar.open {
+            left: 0;
+        }
+
+
+
+        /* İçerik alanı */
+        .content {
+            margin-left: 0;
+            padding: 20px;
+            flex: 1;
+            overflow-y: auto;
+            transition: margin-left 0.3s;
+            margin-top: 60px; /* Navbar yüksekliğini hesaba katmak için */
+        }
+
+        .content .tablo {
+            max-width: 100%;
             margin: 0 auto;
             padding: 20px;
             border: 1px solid #ddd;
@@ -48,64 +100,200 @@
             border-radius: 10px;
             margin-bottom: 20px;
             margin-top: 20px;
-            padding-bottom: 20px;
-            padding-top: 20px;
             border-collapse: collapse;
             border-spacing: 0;
+        }
+
+        .content table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .content th, .content td {
+            padding: 10px;
+            text-align: left;
+            border: 1px solid #ddd;
+        }
+
+        .content th {
+            background-color: #f2f2f2;
+        }
+
+        .content td {
+            word-wrap: break-word;
+            max-width: 200px;
+        }
+
+        .content form {
+            margin-top: 20px;
             display: flex;
+            flex-direction: column;
+        }
+
+        .content form label,
+        .content form input {
+            margin-bottom: 10px;
+        }
+
+        .content form button {
+            padding: 10px;
+            background-color: #333;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+
+        .content form button:hover {
+            background-color: #575757;
+        }
+        .content form {
+            background-color: #ffffff;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            width: 400px;
+            margin: 0 auto; /* Formu ortalıyoruz */
+            box-sizing: border-box;
+        }
+
+        .content form h1 {
+            text-align: center;
+            color: #333;
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+
+        .content form label {
+            font-size: 16px;
+            color: #333;
+            margin-bottom: 8px;
+            display: block;
+        }
+
+        .content form input {
+            padding: 12px;
+            margin: 8px 0;
+            width: 100%;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+            font-size: 16px;
+        }
+
+        .content form input:focus {
+            outline: none;
+            border-color: #3498db;
+            box-shadow: 0 0 5px rgba(52, 152, 219, 0.5);
+        }
+
+        .content form button {
+            padding: 12px;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 18px;
+            width: 100%;
+            margin-top: 10px;
+            transition: background-color 0.3s ease;
+        }
+
+        .content form button:hover {
+            background-color: #2980b9;
         }
     </style>
 </head>
 <body>
-<div class="tablo">
-    <h1>Kayıtlıların Log'u</h1>
-    <table>
-        <thead>
-            <tr>
-                <th>Name</th>
-                <th>Zaman</th>
-            </tr>
-        </thead>
-        <tbody>
-            <% logs.forEach(logs => { %>
-                <tr>
-                    <td><%= logs.name %></td>
-                    <td><%= logs.time %></td>
-                </tr>
-            <% }); %>
-        </tbody>
-    </table>
-
-    <h1>Log</h1>
-    <table>
-        <thead>
-            <tr>
-                <th>ID</th>
-                <th>Zaman</th>
-            </tr>
-        </thead>
-        <tbody>
-            <% log.forEach(log => { %>
-                <tr>
-                    <td><%= log.id %></td>
-                    <td><%= log.time %></td>
-                </tr>
-            <% }); %>
-        </tbody>
-    </table>
-    <h1>Doğrula</h1>
-    <form action="/verified" method="POST">
-      <label for="id">id:</label>
-      <input type="text" id="id" name="id" required>
-      <br>
-      <label for="email">email:</label>
-      <input type="email" id="email" name="email" required>
-      <br>
-      <label for="name">isim:</label>
-      <input type="name" id="name" name="name" required>
-      <br>
-      <button type="submit">Doğrula</button>
-    </form>
+<div class="navbar">
+    <a href="javascript:void(0)" onclick="toggleSidebar()">☰ Menu</a>
 </div>
+
+<div id="mySidebar" class="sidebar">
+    <a href="javascript:void(0)" class="closebtn" onclick="toggleSidebar()">×</a>
+    <a href="javascript:void(0)" onclick="showContent('tablo1')">Kayıtlıların Logu</a>
+    <a href="javascript:void(0)" onclick="showContent('tablo2')">Kayıtsız Log</a>
+    <a href="javascript:void(0)" onclick="showContent('form')">Kayıt</a>
+</div>
+
+<div id="main-content" class="content">
+    <div id="tablo1" class="tablo" style="display: none;">
+        <h1>Kayıtlıların Log'u</h1>
+        <table>
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Zaman</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% logs.forEach(log => { %>
+                    <tr>
+                        <td><%= log.name %></td>
+                        <td><%= log.time %></td>
+                    </tr>
+                <% }); %>
+            </tbody>
+        </table>
+    </div>
+
+    <div id="tablo2" class="tablo" style="display: none;">
+        <h1>Log</h1>
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Zaman</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% log.forEach(log => { %>
+                    <tr>
+                        <td><%= log.id %></td>
+                        <td><%= log.time %></td>
+                    </tr>
+                <% }); %>
+            </tbody>
+        </table>
+    </div>
+
+    <div id="main-content" class="content">
+        <div id="form" class="tablo" style="display: none;">
+            <h1>Doğrula</h1>
+            <form action="/verified" method="POST">
+                <label for="id">id:</label>
+                <input type="text" id="id" name="id" required>
+                <br>
+                <label for="email">email:</label>
+                <input type="email" id="email" name="email" required>
+                <br>
+                <label for="name">isim:</label>
+                <input type="name" id="name" name="name" required>
+                <br>
+                <button type="submit">Doğrula</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    function toggleSidebar() {
+        var sidebar = document.getElementById("mySidebar");
+        sidebar.classList.toggle("open");
+    }
+
+    function showContent(contentId) {
+        var contentSections = document.querySelectorAll(".tablo");
+        contentSections.forEach(function(section) {
+            section.style.display = "none";
+        });
+
+        document.getElementById(contentId).style.display = "block";
+    }
+
+    window.onload = function() {
+        showContent('tablo1');
+    }
+</script>
 </body>
 </html>
